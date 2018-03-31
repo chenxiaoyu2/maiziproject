@@ -1,0 +1,463 @@
+ <!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>首页</title>
+<link href="/static/css/base.css" rel="stylesheet">
+<link href="/static/css/microoh-v5.css" rel="stylesheet">
+<link href="/static/css/animate.css" rel="stylesheet">
+<link href="/static/css/develop.css" rel="stylesheet">
+<!--[if lt IE 9]>
+<script src="js/html5shiv.min.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<div class="microoh-main">
+    <header class="navbar navbar-default navbar-fixed-top"  data-spy="affix" data-offset-top="64">
+    <div class="container">
+      <div class="navbar-header">
+      	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#microoh-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="http://127.0.0.1:8000/" title="麦子学院"><img src="/static/images/logo.png"><img src="/static/images/logo-font.png"></a>
+      </div>
+      <div class="collapse navbar-collapse" id="microoh-navbar-collapse">
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="http://localhost:8000/course/">职业课程</a></li>
+          <li><a href="https://tieba.baidu.com/f?kw=%E9%BA%A6%E5%AD%90%E5%AD%A6%E9%99%A2">论坛</a></li>
+        </ul>
+        <form  class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <i class="v5-icon v5-icon-search"></i>
+            <input type="text" name="text" class="form-control" id="search" placeholder="搜索你感兴趣的课程" >
+          </div>
+          <div class="search-dp" id="hotkeyword">
+          	<!--推荐关键词-->
+            <div class="hotkeyword">
+              <h4>推荐搜索关键词</h4>
+              <ul class="cf">
+                {% for keyword in keyword_list %}
+                <li><a href="">{{ keyword.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </form>
+        <div class="v5-topbar-login">
+          <div class="v5-topbar-login-on cf">
+            <dl>
+              <dt>
+                <a href="" class="dt-username"><span>登录</span><i class="v5-icon v5-icon-rd"></i></a>
+              </dt>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <!--搜索结果-->
+      <div class="search-dp" id="keyword-group">
+        <div class="keyword-group scroll-pane">
+          <dl>
+            <dt>职业课程</dt>
+            <dd class="cf">
+                {% for t in course_list %}
+            <a href="http://127.0.0.1:8000/course_play/{{ t.id }}" style="background-color:#A8C310;">{{ t.name }}</a>
+                {% endfor %}
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="v5-banner-big">
+     <div class="container">
+      <div class="carousel-container">
+        <div id="carousel">
+          <div class="carousel-feature">
+            <a href="http://127.0.0.1:8000/course_play/16/"><img class="carousel-image" alt="Image Caption" src="/static/test/19.png"></a>
+          </div>
+          <div class="carousel-feature">
+            <a href="http://127.0.0.1:8000/course_play/15/"><img class="carousel-image" alt="Image Caption" src="/static/test/20.png"></a>
+          </div>
+          <div class="carousel-feature">
+            <a href="http://127.0.0.1:8000/course_play/14/"><img class="carousel-image" alt="Image Caption" src="/static/test/21.png"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="v5-index-main">
+    <div class="v5-titline"></div>
+    <div class="container">
+      <div class="v5-recommend">
+        <div class="v5-tabs-box" id="v5-tabs">
+          <ul class="v5-tabs" id="v5-tabs" role="tablist">
+            <li class="active"><a href="#new" class="is-active" role="tab" data-toggle="tab">最新课程</a></li>
+            <li><a href="#most" role="tab" data-toggle="tab">最多播放</a></li>
+            <li><a href="#hot" role="tab" data-toggle="tab">最具人气</a></li>
+          </ul>
+          <div class="tabs-container tab-content">
+            <div class="v5-course-item tab-pane fade in active" id="new" data-holder="holdernew">
+              <div class="page-item">
+                <ul class="row course-list-index">
+                    {% for course in course_list %}
+                  <li class="col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                    <a href="http://127.0.0.1:8000/course_play/{{ course.id }}">
+                      <dl>
+                        <dt>
+                          <div><img src="{{ course.course_img }}"></div>
+                        </dt>
+                        <dd>
+                          <span>{{ course.name }}</span>
+                          <p>{{ course.study_count }}人正在学习</p>
+                        </dd>
+                      </dl>
+                    </a>
+                  </li>
+                    {% endfor %}
+                </ul>
+              </div>
+              <div class="page-bg-w">
+                <div class="row v5-pages">
+                  <div class="col-sm-12 v5-pages-list">
+                    <ul class="row fr">
+                      <li><a href="" class="v5-icon v5-icon-prev"></a></li>
+                      <li><a href="" class="page-num active">1</a></li>
+                      <li><a href="" class="page-num">2</a></li>
+                      <li><a href="" class="page-num">3</a></li>
+                      <li><a href="" class="page-num">4</a></li>
+                      <li><a href="" class="page-num">5</a></li>
+                      <li><a href="" class="v5-icon v5-icon-next"></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="v5-course-item tab-pane fade" id="most" data-holder="holdermost">
+            	<div class="page-item">
+                <ul class="row course-list-index">
+                    {% for play_count in play_count_list %}
+                  <li class="col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                    <a href="http://127.0.0.1:8000/course_play/{{ play_count.id }}">
+                      <dl>
+                        <dt>
+                          <div><img src="{{ play_count.course_img }}"></div>
+                        </dt>
+                        <dd>
+                          <span>{{ play_count.name }}</span>
+                          <p>{{ play_count.play_count }}人已观看</p>
+                        </dd>
+                      </dl>
+                    </a>
+                  </li>
+                    {% endfor %}
+                </ul>
+              </div>
+              <div class="page-bg-w">
+                <div class="row v5-pages">
+                  <div class="col-sm-12 v5-pages-list">
+                    <ul class="row fr">
+                      <li><a href="" class="v5-icon v5-icon-prev"></a></li>
+                      <li><a href="" class="page-num active">1</a></li>
+                      <li><a href="" class="page-num">2</a></li>
+                      <li><a href="" class="page-num">3</a></li>
+                      <li><a href="" class="page-num">4</a></li>
+                      <li><a href="" class="page-num">5</a></li>
+                      <li><a href="" class="v5-icon v5-icon-next"></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>  
+            <div class="v5-course-item tab-pane fade" id="hot" data-holder="holderhot">
+              <div class="page-item">
+                <ul class="row course-list-index">
+                    {% for study_count in study_count_list %}
+                  <li class="col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                    <a href="http://127.0.0.1:8000/course_play/{{ study_count.id }}">
+                      <dl>
+                        <dt>
+                          <div><img src="{{ study_count.course_img }}"></div>
+                        </dt>
+                        <dd>
+                          <span>{{ study_count.name }}</span>
+                          <p>{{ study_count.study_count }}人正在学习</p>
+                        </dd>
+                      </dl>
+                    </a>
+                  </li>
+                    {% endfor %}
+                </ul>
+              </div>
+              <div class="page-bg-w">
+                <div class="row v5-pages">
+                  <div class="col-sm-12 v5-pages-list">
+                    <ul class="row fr">
+                      <li><a href="" class="v5-icon v5-icon-prev"></a></li>
+                      <li><a href="" class="page-num active">1</a></li>
+                      <li><a href="" class="page-num">2</a></li>
+                      <li><a href="" class="page-num">3</a></li>
+                      <li><a href="" class="page-num">4</a></li>
+                      <li><a href="" class="page-num">5</a></li>
+                      <li><a href="" class="v5-icon v5-icon-next"></a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="v5-titline">
+      <div class="container">
+        <h1>老师介绍</h1>
+      </div>
+    </div>
+    <div class="container">
+      <div class="tc-list">
+        <a id="prev" class="prev" href="#"></a>
+        <div class="tc-list-w">
+          <ul id="foo" class="cf">
+              {% for teacher in read_teacher %}
+            <li>
+              <dl>
+                <dt><a href="http://127.0.0.1:8000/teacher/{{ teacher.id }}" style="border-left-color:#00A388;"><img src="{{ teacher.img_url }}"></a></dt>
+                <dd>
+                  <h2>{{ teacher.username }}</h2>
+                  <h3>{{ teacher.description }}</h3>
+                </dd>
+              </dl>
+            </li>
+              {% endfor %}
+          </ul>
+        </div>
+        <a id="next" class="next" href="#"></a>
+      </div>
+    </div>
+    <div class="v5-titline">
+      <div class="container">
+        <h1>推荐阅读</h1>
+      </div>
+    </div>
+    <div class="container">
+      <div class="v5-read cf">
+        <div class="v5-read-item">
+          <div class="v5-read-list" style="background-color:#00A388;">
+            <h1>足球</h1>
+            <ul>
+                {% for soccer in read_soccer %}
+              <li><a href="{{ soccer.url }}" title="{{ soccer.title }}">{{ soccer.title }}</a></li>
+                {% endfor %}
+            </ul>
+          </div>
+          <p><img src="/static/test/22.jpg"></p>
+        </div>
+        <div class="v5-read-item v5-read-item-mid">
+          <p><img src="/static/test/23.jpg"></p>
+          <div class="v5-read-list" style="background-color:#FF6138;">
+            <h1>篮球</h1>
+            <ul>
+                {% for basketball in read_basketball %}
+              <li><a href="{{ basketball.url }}" title="{{ basketball.title }}">{{ basketball.title }}</a></li>
+                {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="v5-read-item">
+          <div class="v5-read-list" style="background-color:#00A388;">
+            <h1>麦子学院</h1>
+            <ul>
+                {% for maizi in read_maizi %}
+              <li><a href="{{ maizi.url }}" title="{{ maizi.title }}">{{ maizi.title }}</a></li>
+                {% endfor %}
+            </ul>
+          </div>
+          <p><img src="/static/test/24.jpg"></p>
+        </div>
+      </div>
+    </div>
+    <div class="v5-titline">
+      <div class="container">
+        <h1>战略合作</h1>
+      </div>
+    </div>
+    <div class="container">
+      <div class="v5-strategic">
+        <ul class="cf">
+          <li>
+            <a href="https://v.qq.com/"><img src="/static/test/18.jpg"></a>
+          </li>
+          <li>
+            <a href="http://www.sina.com.cn/"><img src="/static/test/19.jpg"></a>
+          </li>
+          <li>
+            <a href="http://lol.qq.com/"><img src="/static/test/20.jpg"></a>
+          </li>
+          <li>
+            <a href="http://www.baidu.com/"><img src="/static/test/21.jpg"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="v5-footer">
+    <div class="container">
+      <div class="v5-footer-container">
+        <div class="v5-footer-links cf">
+          <dl class="f-link">
+            <dt>友情链接</dt>
+            <dd>
+                {% for link in link_list %}
+              <ul>
+                <li class="cf">
+                  <a href="{{ link.callback_url }}">{{ link.title }}</a><span>|</span>
+
+                </li>
+                <li class="cf">
+                    {% for link in link_list %}
+                  <a href="{{ link.callback_url }}">{{ link.title }}</a><span>|</span>
+                    {% endfor %}
+                </li>
+              </ul>
+                {% endfor %}
+            </dd>
+          </dl>
+          <dl class="follow">
+            <dt>关注我们</dt>
+            <dd>
+              <ul>
+                <li><a href=""><span class="sina"></span>新浪微博</a></li>
+                <li><a href=""><span class="weixin"></span>官方微信</a></li>
+                <li><a href=""><span class="qq"></span>腾讯微博</a></li>
+              </ul>
+            </dd>
+          </dl>
+          <dl class="webmap">
+            <dt>网站导航</dt>
+            <dd>
+              <ul>
+                <li><a href="">网站首页</a></li>
+                <li><a href="">关于我们</a></li>
+                <li><a href="">联系我们</a></li>
+                <li><a href="">意见反馈</a></li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+        <div class="v5-footer-bottom">
+          <p>麦子学院官网制作</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--登陆后-->
+<div class="show-card animated hidden">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        {% if not request.user.is_authenticated %}
+        <b><a href="{% url 'login' %}" class="link-default">&raquo;去登录</a>&nbsp;<a href="{% url 'reg' %}" class="link-default">&raquo;去注册</a></b>
+        {% else %}
+      <td class="td-userhd"><span class="user-pic"><img src="/static/test/15.jpg"></span></td>
+      <td align="right" class="text-align-r">
+        <a href="" class="link-default">&raquo;{{ request.user.username }}</a>
+        <div class="user-email">{{ request.user.email }}</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2"><a href="http://127.0.0.1:8000/student/{{ request.user.id }}" class="btn btn-micv5 btn-md btn-block">进入个人中心</a></td>
+    </tr>
+    <tr>
+      <td colspan="2"><a href="{% url 'logout' %}" class="link-cancel">注销</a></td>
+    </tr>
+      {% endif %}
+  </table>
+</div>
+
+<!--意见反馈-->
+<div class="feedback">
+  <div class="feedback-switch"></div>
+  <div class="feedback-title">
+  	 意见反馈
+  </div>
+  <div class="feedback-body">
+    <ul>
+      <li class="form-group"><input type="text" class="form-control" placeholder="请输入您的QQ号方便我们联系您"></li>
+      <li class="form-group"><textarea class="form-control" rows="5" placeholder="使用过程中有什么意见及建议请反 馈给我们吧"></textarea></li>
+      <li class="form-group"><button type="button" class="btn btn-micv5 btn-md btn-block">反馈</button></li>
+    </ul>
+  </div>
+</div>
+
+
+
+<script src="/static/js/jquery-1.11.1.min.js"></script>
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/static/js/jquery.featureCarousel.min.js"></script>
+<script src="/static/js/jquery.carouFredSel.js"></script>
+<script src="/static/js/jquery.mousewheel.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jPages.min.js"></script>
+<script src="/static/js/jquery.jscrollpane.min.js"></script>
+<script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+<script src="/static/js/microoh-v5.js"></script>
+<script type="text/javascript">
+$(function() {
+	//大图切换
+	var carousel = $("#carousel").featureCarousel({
+		topPadding: 0,
+		sidePadding: 0,
+		smallFeatureOffset:	100,
+		trackerSummation: false
+	});
+	//首页名师切换
+	$('#foo').carouFredSel({
+		auto: false,
+		prev: '#prev',
+		next: '#next',
+		mousewheel: true,
+		items:{
+			visible:4,
+			minimum:1
+		},
+		scroll:{
+			items:1,
+			duration:1000
+		}
+	});
+	//登录后 
+  function show_card(){
+    var _parent_left = $('.v5-topbar-login').offset().left;
+    var _parent_outw = $('.v5-topbar-login').outerWidth();
+    var _this_outw = $('.show-card').outerWidth();
+    var _this_left = Math.abs(_parent_left - (_this_outw - _parent_outw));  
+    $('.show-card').css({
+      'left': _this_left
+    })
+  }
+  show_card();
+  $(window).resize(function(){
+    show_card();
+  });
+  
+  $('.scroll-pane').jScrollPane({
+      autoReinitialise: true
+    });
+});
+
+
+</script>
+</body>
+</html>

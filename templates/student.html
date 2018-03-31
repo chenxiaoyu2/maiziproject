@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>学生个人中心</title>
+<link href="/static/css/base.css" rel="stylesheet">
+<link href="/static/css/microoh-v5.css" rel="stylesheet">
+<link href="/static/css/animate.css" rel="stylesheet">
+<link href="/static/css/develop.css" rel="stylesheet">
+<!--[if lt IE 9]>
+<script src="js/html5shiv.min.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body>
+<div class="microoh-main">
+  <header class="navbar navbar-default navbar-fixed-top affix"  data-offset-top="64">
+    <div class="container">
+      <div class="navbar-header">
+      	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#microoh-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="http://127.0.0.1:8000/" title="麦子学院"><img src="/static/images/logo.png"><img src="/static/images/logo-font.png"></a>
+      </div>
+      <div class="collapse navbar-collapse" id="microoh-navbar-collapse">
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="http://localhost:8000/course/">职业课程</a></li>
+          <li><a href="https://tieba.baidu.com/f?kw=%E9%BA%A6%E5%AD%90%E5%AD%A6%E9%99%A2">论坛</a></li>
+        </ul>
+        <form  class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <i class="v5-icon v5-icon-search"></i>
+            <input type="text" class="form-control" id="search" placeholder="搜索你感兴趣的课程" >
+          </div>
+          <div class="search-dp" id="hotkeyword">
+          	<!--推荐关键词-->
+            <div class="hotkeyword">
+              <h4>推荐搜索关键词</h4>
+              <ul class="cf">
+                {% for keyword in keyword_list %}
+                <li><a href="">{{ keyword.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </form>
+        <div class="v5-topbar-login">
+          <div class="v5-topbar-login-off" style="display:none;">
+            <a href="#" data-toggle="modal" data-target="#loginModal">登录</a>
+          </div>
+          <div class="v5-topbar-login-on cf">
+            <dl>
+              <dt>
+                <a href="" class="dt-username"><span>登录</span><i class="v5-icon v5-icon-rd"></i></a>
+              </dt>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <!--搜索结果-->
+      <div class="search-dp" id="keyword-group">
+        <div class="keyword-group scroll-pane">
+          <dl>
+            <dt>职业课程</dt>
+            <dd class="cf">
+            </dd>
+          </dl>
+          <dl>
+            <dt>其他课程</dt>
+            <dd class="cf">
+                {% for t in course_list %}
+            <a href="http://127.0.0.1:8000/course_play/{{ t.id }}" style="background-color:#A8C310;">{{ t.name }}</a>
+                {% endfor %}
+            </dd>
+
+          </dl>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!--登陆后-->
+<div class="show-card animated hidden">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        {% if not request.user.is_authenticated %}
+            <td align="right" class="text-align-r">
+        <b><a href="{% url 'login' %}" class="link-default">&raquo;去登录</a>&nbsp;<a href="{% url 'reg' %}" class="link-default">&raquo;去注册</a></b>
+            </td>
+        {% else %}
+      <td class="td-userhd"><span class="user-pic"><img src="/static/test/15.jpg"></span></td>
+      <td align="right" class="text-align-r">
+        <a href="" class="link-default">&raquo;{{ request.user.username }}</a>
+        <div class="user-email">{{ request.user.email }}</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2"><a href="http://127.0.0.1:8000/student/{{ request.user.id }}" class="btn btn-micv5 btn-md btn-block">进入个人中心</a></td>
+    </tr>
+    <tr>
+      <td colspan="2"><a href="{% url 'logout' %}" class="link-cancel">注销</a></td>
+    </tr>
+      {% endif %}
+  </table>
+</div>
+  
+  <div class="container-fluid container-banner">
+    <div class="container container-uinfo">
+      <div class="header-uinfo">
+        <div class="uinfo-head"><img src="/static/test/15.jpg"></div>
+        <div class="uinfo-con">
+          <div class="user-name cf">
+            <span>{{ student_info.username }}</span>
+          </div>
+          <div class="course-info">
+            <span>报名课程：{{ course_count }}门</span>
+          </div>
+        </div>
+      </div>
+      <div class="uc-nav">
+        <ul>
+            <li><a href="#mycourse" role="tab" data-toggle="tab">我的课程</a></li>
+          <li class="active"><a href="#myinfo" role="tab" data-toggle="tab">个人资料</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+<div class="tab-content">
+    <div class="tab-pane active" id="myinfo">
+  <div class="uc-boxa">
+    <div class="uc-h1">基本资料</div>
+    <form class="form-horizontal uc-form" role="form">
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label v5-hd-lable v5-gutter">头像</label>
+        <div class="col-sm-10 dis-table v5-gutter">
+          <div class="user-hd dis-table-cell"><img src="/static/test/15.jpg"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label v5-gutter">昵称</label>
+        <div class="col-sm-6 v5-control-label">
+           <span>{{ student_info.username }}</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label v5-gutter">Q Q</label>
+        <div class="col-sm-6 v5-control-label">
+           <span>{{ student_info.qq }}</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label v5-gutter">手机</label>
+        <div class="col-sm-6 v5-gutter v5-control-label">
+          <span>{{ student_info.mobile }}
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="" class="col-sm-2 control-label v5-gutter">邮箱</label>
+        <div class="col-sm-6 v5-gutter v5-control-label">
+          <span>{{ student_info.email }}</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-2 v5-gutter">
+            <a href="{% url  'change' %}" class="link-default">&raquo;去修改信息</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+    <div class="tab-pane" id="mycourse">
+    <div class="container uc-boxb" >
+    <div class="uc-h1">职业课程</div>
+    <ul class="row my-course">
+        {% for course_study in course_study_list %}
+      <li class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+        <section style="background-color:#A9BE32;">
+          <a href="http://127.0.0.1:8000/course_play/{{ course_study.id }}">
+          	<img src="/static/images/course/cocos.png">
+            <article>
+              <h3>{{ course_study.name }}</h3>
+              <p>{{ course_study.desc }}</p>
+            </article>
+          </a>
+          <a href="http://127.0.0.1:8000/course_play/{{ course_study.id }}" class="opt">继续学习</a>
+        </section>
+      </li>
+        {% endfor %}
+    </ul>
+  </div>
+</div>
+</div>
+
+<div class="v5-footer">
+    <div class="container">
+      <div class="v5-footer-container">
+        <div class="v5-footer-bottom">
+          <p>麦子学院官网制作</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/jquery-1.11.1.min.js"></script>
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/static/js/jquery.featureCarousel.min.js"></script>
+<script src="/static/js/jquery.carouFredSel.js"></script>
+<script src="/static/js/jquery.mousewheel.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jPages.min.js"></script>
+<script src="/static/js/jquery.jscrollpane.min.js"></script>
+<script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+<script src="/static/js/microoh-v5.js"></script>
+
+<script>
+$(function(){
+
+	$('.scroll-pane').jScrollPane({
+			autoReinitialise: true
+		});
+		$('a.reply').click(function(event){
+		  event.preventDefault();
+		  var reply_box = $(this).parents('.media-body').find('.media-reply');
+		  reply_box.show();
+		});
+
+       function show_card(){
+    var _parent_left = $('.v5-topbar-login').offset().left;
+    var _parent_outw = $('.v5-topbar-login').outerWidth();
+    var _this_outw = $('.show-card').outerWidth();
+    var _this_left = Math.abs(_parent_left - (_this_outw - _parent_outw));
+    $('.show-card').css({
+      'left': _this_left
+    })
+  }
+  show_card();
+  $(window).resize(function(){
+    show_card();
+  });
+
+});
+</script>
+
+</body>
+</html>

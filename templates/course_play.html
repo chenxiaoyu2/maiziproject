@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>课程播放</title>
+<link href="/static/css/base.css" rel="stylesheet">
+<link href="/static/css/microoh-v5.css" rel="stylesheet">
+<link href="/static/css/animate.css" rel="stylesheet">
+<link href="/static/css/develop.css" rel="stylesheet">
+    {% load course_filter %}
+<!--[if lt IE 9]>
+<script src="js/html5shiv.min.js"></script>
+<script src="js/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body>
+<div class="microoh-main">
+     <header class="navbar navbar-default navbar-fixed-top affix"  data-offset-top="64">
+    <div class="container">
+      <div class="navbar-header">
+      	<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#microoh-navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="http://127.0.0.1:8000/" title="麦子学院"><img src="/static/images/logo.png"><img src="/static/images/logo-font.png"></a>
+      </div>
+      <div class="collapse navbar-collapse" id="microoh-navbar-collapse">
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="http://localhost:8000/course/">职业课程</a></li>
+          <li><a href="https://tieba.baidu.com/f?kw=%E9%BA%A6%E5%AD%90%E5%AD%A6%E9%99%A2">论坛</a></li>
+        </ul>
+        <form  class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <i class="v5-icon v5-icon-search"></i>
+            <input type="text" class="form-control" id="search" placeholder="搜索你感兴趣的课程" >
+          </div>
+          <div class="search-dp" id="hotkeyword">
+          	<!--推荐关键词-->
+            <div class="hotkeyword">
+              <h4>推荐搜索关键词</h4>
+              <ul class="cf">
+                {% for keyword in keyword_list %}
+                <li><a href="">{{ keyword.name }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </form>
+        <div class="v5-topbar-login">
+          <div class="v5-topbar-login-off" style="display:none;">
+            <a href="#" data-toggle="modal" data-target="#loginModal">登录</a>
+          </div>
+          <div class="v5-topbar-login-on cf">
+            <dl>
+              <dt>
+                <a href="" class="dt-username"><span>登录</span><i class="v5-icon v5-icon-rd"></i></a>
+              </dt>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <!--搜索结果-->
+      <div class="search-dp" id="keyword-group">
+        <div class="keyword-group scroll-pane">
+          <dl>
+            <dt>职业课程</dt>
+            <dd class="cf">
+            </dd>
+          </dl>
+          <dl>
+            <dt>其他课程</dt>
+            <dd class="cf">
+                {% for t in course_list %}
+            <a href="http://127.0.0.1:8000/course_play/{{ t.id }}" style="background-color:#A8C310;">{{ t.name }}</a>
+                {% endfor %}
+            </dd>
+
+          </dl>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <ol class="breadcrumb">
+      <li><a href="http://127.0.0.1:8000/">首页</a></li>
+      <li><a href="http://127.0.0.1:8000/course/">职业课程</a></li>
+      <li class="active">{{ course.name }}</li>
+    </ol>
+  </div>
+  <div class="container">
+    <div class="course-play">
+      <dl class="course-lead">
+        <dt>{{ course.name }}</dt>
+        <dd>{{ course.desc }}</dd>
+      </dl>
+      <div class="course-play-container">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 course-play-box">
+            <video src="{{ curr_lesson.video_url }}" autoplay="autoplay" controls="controls" height="100%" width="100%">
+                <source src="{{ curr_lesson.video_url }}" type="video/mp4">
+                您的浏览器暂不支持视频播放，请换其他浏览器观看。
+            </video>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 course-play-list">
+            <h1>课程章节</h1>
+            <div class="playlist scroll-pane">
+              <ul>
+                  {% for lesson in lesson_list %}
+                    {% if request.user.is_authenticated %}
+                        {% if curr_lesson_id == lesson.id %}
+                    <li class="active_null"><a href="http://127.0.0.1:8000/course_play/lesson/{{ course.id }}/{{ lesson.id }}">{{ lesson.name }}</a></li>
+                        {% else %}
+                    <li><a href="http://127.0.0.1:8000/course_play/lesson/{{ course.id }}/{{ lesson.id }}">{{ lesson.name }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        {% if curr_lesson_id == lesson.id %}
+                    <li class="active_null"><a class="topay" href="http://127.0.0.1:8000/course_play/lesson/{{ course.id }}/{{ lesson.id }}">{{ lesson.name }}</a><i class="v5-icon v5-icon-lock"></i></li>
+                        {% else %}
+                    <li><a class="topay" href="http://127.0.0.1:8000/course_play/lesson/{{ course.id }}/{{ lesson.id }}">{{ lesson.name }}</a><i class="v5-icon v5-icon-lock"></i></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="row mc-interact">
+          <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+            <div class="mc-interact-save">
+              <a href="" class="house">
+                <i class="v5-icon v5-icon-save"></i>
+                <span>收藏</span>
+              </a>
+              <a href="javascript:void(0);" class="downloadv">
+                <i class="v5-icon v5-icon-download"></i>
+                <span>下载</span>
+              </a>
+            </div>
+            <div class="mc-interact-share">
+              <dl>
+                <dt class="cf">
+                  <a href="" class="v5-icon v5-icon-sina"></a>
+                  <a href="" class="v5-icon v5-icon-qqzone"></a>
+                  <a href="" class="v5-icon v5-icon-sina"></a>
+                </dt>
+                <dd>分享给朋友</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+            <p>已有6666位同学与你并肩作战</p>
+          </div>
+        </div>
+        <div class="row course-play-info">
+          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 aside-l">
+          	<ul class="course-play-tabs" role="tablist">
+              <li class="active"><a href="#comm" role="tab" data-toggle="tab">学习交流</a></li>
+              <li><a href="#exercise" role="tab" data-toggle="tab">在线练习</a></li>
+              <li><a href="#download" role="tab" data-toggle="tab">课件下载</a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="comm">
+              	<div class="media">
+                  <a class="pull-left" href="#">
+                    <img class="media-object" src="/static/test/15.jpg">
+                  </a>
+                  <div class="media-body">
+                    <h4 class="media-heading">
+                        {% if not request.user.is_authenticated %}
+                        <span class="user-name">游客</span>
+                        {% else %}
+                        <span class="user-name">{{ request.user.username }}</span>
+                        {% endif %}
+                    </h4>
+                        <form action="{% url 'discuss_post' %}" method="post">
+                        {% csrf_token %}
+                      <div class="comment-input">
+                        {% if not request.user.is_authenticated %}
+                    	<textarea class="form-control" rows="3" placeholder="我要评论" disabled></textarea>
+                        {% else %}
+                        <textarea class="form-control" name="content" rows="3" placeholder="我要评论"></textarea>
+                        {% endif %}
+                        <input class="lesson_id" name="lesson_id" type="hidden" value="{{ curr_lesson_id }}">
+                        <input class="user_id" name="user_id" type="hidden" value="{{ request.user.id }}">
+                      {% if not request.user.is_authenticated %}
+                      <div class="not-logged">
+                      	<p>请先<a  href="{% url 'login' %}" >登录</a>或<a  href="{% url 'reg' %}"  >注册</a></p>
+                      </div>
+                      {% endif %}
+                      <div class="btnbox">
+                        {% if request.user.is_authenticated %}
+                              <input name="submit" type="submit" id="submit"  value="发布评论" class="btn btn-micv5 btn-lg-fts" />
+                        {% else %}
+                        <button type="button" class="btn btn-micv5 btn-lg-fts btn-micv5-disabled" disabled>发布评论</button>
+                        {% endif %}
+                        <div id="inform" class="bg-danger" style="display: none"><span>请输入评论内容</span></div>
+                      </div>
+                    </div>
+                        </form>
+                  </div>
+                </div>
+                <div id="comment_list">
+                    {% for discuss in discuss_list %}
+                <ul class="media-list">
+                  <li class="media">
+                    <a class="pull-left" href="#">
+                      <img class="media-object" src="/static/test/15.jpg">
+                    </a>
+                    <div class="media-body">
+                      <h4 class="media-heading">
+                      	<a href="" class="reply">回复{{ discuss.discuss_num }}</a>
+                      	<span class="user-name">{{ discuss.user.username }}</span>
+                        <span class="time">{{ discuss.date_publish | cdate  }}</span>
+                      </h4>
+                      <p>{{ discuss.content }}</p>
+                        {% for sub_discuss in discuss.children_discuss %}
+                        <div class="media">
+                        <a class="pull-left" href="#">
+                          <img class="media-object" src="/static/test/15.jpg">
+                        </a>
+                        <div class="media-body">
+                          <h4 class="media-heading">
+                          	<a href="" class="reply">回复{{ sub_discuss.discuss_num }}</a>
+                            <span class="user-name">{{ sub_discuss.user.username }}</span>
+                              <span class="time">{{ discuss.date_publish | cdate  }}</span>
+                          </h4>
+                            <p>{{ sub_discuss.content }}</p>
+                        </div>
+                        </div>
+                        {% endfor %}
+                     <!-- 子评论提交开始 -->
+                      <div class="media media-reply">
+                          <a class="pull-left" href="#">
+                            <img class="media-object" src="/static/test/15.jpg">
+                          </a>
+                          <div class="media-body">
+                              <h4 class="media-heading">
+                                  {% if request.user.is_authenticated %}
+                                  <span class="user-name">{{ request.user.username }}</span>
+                                  {% endif %}
+                              </h4>
+                            <form action="{% url 'discuss_post' %}" method="post">
+                            {% csrf_token %}
+                              <div class="comment-input">
+                                  {% if not request.user.is_authenticated %}
+                                  <textarea class="form-control" rows="3" name="content" placeholder="我要评论" disabled></textarea>
+                                  <div class="not-logged">
+                                    <p>请先<a  href="{% url 'login' %}" >登录</a>或<a  href="{% url 'reg' %}"  >注册</a></p>
+                                  </div>
+                                  {% else %}
+                                  <textarea class="form-control" name='content' rows="3" placeholder="我要评论"></textarea>
+                                  {% endif %}
+                                   <input class="lesson_id" name="lesson_id" type="hidden" value="{{ curr_lesson_id }}">
+                                  <input class="user_id" name="user_id" type="hidden" value="{{ request.user.id }}">
+                                  <div class="btnbox">
+                                      {% if request.user.is_authenticated %}
+                                      <input name="submit" type="submit" id="submit"  value="发布评论" class="btn btn-micv5 btn-lg-fts" />
+                                      {% else %}
+                                      <button type="button" class="btn btn-micv5 btn-lg-fts btn-micv5-disabled" disabled>发布评论</button>
+                                      {% endif %}
+                                      <div id="inform" class="bg-danger" style="display: none"><span>请输入评论内容</span></div>
+                                  </div>
+                              </div>
+                            </form>
+                          </div>
+                      </div>
+                    <!-- 子评论提交结束 -->
+                    </div>
+                  </li>
+                </ul>
+                {% endfor %}
+                </div>
+
+                <div class="page-bg-w">
+                  <div class="row v5-pages">
+                    <div class="col-sm-12 v5-pages-list">
+                      <ul class="row fr">
+                        <li><a href="" class="v5-icon v5-icon-prev"></a></li>
+                        <li><a href="" class="page-num active">1</a></li>
+                        <li><a href="" class="page-num">2</a></li>
+                        <li><a href="" class="page-num">3</a></li>
+                        <li><a href="" class="page-num">4</a></li>
+                        <li><a href="" class="page-num">5</a></li>
+                        <li><a href="" class="v5-icon v5-icon-next"></a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="exercise">
+              	<div class="row exercise-table">
+                  <div class="col-sm-4">
+                   <div class="knowledge-point">
+                     <h1>知识点</h1>
+                     <p>echo是PHP中的输出语句，可以把字符串输出（字符串用双引号括起来）。</p>
+                     <p>如下代码：</p>
+                     <p>&lt;?php echo "Hello world!";?&gt;注意echo关键字与字符串之间至少要有一个空格。如下面写法是不正确的：</p>
+                     <p>&lt;?php echo"Hello world!";?&gt;</p>
+                   </div> 
+                   <div class="task">
+                     <h1>任务</h1>
+                     <p>echo是PHP中的输出语句，可以把字符串输出（字符串用双引号括起来）。</p>
+                     <p>如下代码：</p>
+                     <p>&lt;?php echo "Hello world!";?&gt;注意echo关键字与字符串之间至少要有一个空格。如下面写法是不正确的：</p>
+                     <p>&lt;?php echo"Hello world!";?&gt;</p>
+                   </div>
+                  </div>
+                  <div class="col-sm-8 v5-code">
+                    <div class="code-wp">
+                      <div class="code-box scroll-pane">
+                        <pre>
+<code>&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;
+&lt;title&gt;Echo语句&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt; 
+&lt;p&gt;
+ 
+&lt;/p&gt;
+</code>
+                        </pre>                     
+                      </div>
+                      <div class="runcode"><button class="btn btn-micv5 btn-lg-fts">提交</button></div>
+                    </div>
+                    <div class="run-results">
+                      <h1>运行结果</h1>
+                      <div class="results scroll-pane">
+                        <pre>
+<code>&lt;!DOCTYPE HTML&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8"&gt;
+&lt;title&gt;Echo语句&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt; 
+</code>
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="download">
+              	<table class="table">
+                  <tbody>
+                    <tr>
+                      <td width="9%"><img src="/static/images/doc/rar.png"></td>
+                      <td width="36%">maiziedu.rar</td>
+                      <td width="55%" class="text-align-r"><a href="/static/maiziedu.rar" class="btn btn-micv5"><i class="v5-icon v5-icon-downloadsm"></i>下载</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 aside-r">
+            <div class="v5-box">
+              <h1>讲师介绍</h1>
+              <div class="media teacher">
+                <a class="pull-left" href="#">
+                  <img src="{{ curr_lesson.teacher.img_url }}">
+                </a>
+                <div class="media-body">
+                  <h4 class="media-heading">{{ curr_lesson.teacher.username }}</h4>
+                  <p>{{ curr_lesson.teacher.description }}</p>
+                  <a href="http://127.0.0.1:8000/teacher/{{ curr_lesson.teacher.id }}" class="btn btn-micv5">查看他的课程</a>
+                </div>
+              </div>
+            </div>
+            <div class="v5-box">
+              <h1>相关文章</h1>
+                {% for article in read_article_list %}
+              <div class="media relevant">
+                <a class="pull-left" href="#">
+                  <img src="/static/test/20.jpg">
+                </a>
+                <div class="media-body">
+                  <h4 class="media-heading"><a href="{{ article.url }}">{{ article.title }}</a></h4>
+                </div>
+              </div>
+                {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="v5-footer">
+    <div class="container">
+      <div class="v5-footer-container">
+        <div class="v5-footer-bottom">
+          <p>麥子學院官網</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--登陆后-->
+<div class="show-card animated hidden">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        {% if not request.user.is_authenticated %}
+            <td align="right" class="text-align-r">
+        <b><a href="{% url 'login' %}" class="link-default">&raquo;去登录</a>&nbsp;<a href="{% url 'reg' %}" class="link-default">&raquo;去注册</a></b>
+            </td>
+        {% else %}
+      <td class="td-userhd"><span class="user-pic"><img src="/static/test/15.jpg"></span></td>
+      <td align="right" class="text-align-r">
+        <a href="" class="link-default">&raquo;{{ request.user.username }}</a>
+        <div class="user-email">{{ request.user.email }}</div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2"><a href="http://127.0.0.1:8000/student/{{ request.user.id }}" class="btn btn-micv5 btn-md btn-block">进入个人中心</a></td>
+    </tr>
+    <tr>
+      <td colspan="2"><a href="{% url 'logout' %}" class="link-cancel">注销</a></td>
+    </tr>
+      {% endif %}
+  </table>
+</div>
+
+
+<script src="/static/js/jquery-1.11.1.min.js"></script>
+<script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
+<script src="/static/js/jquery.featureCarousel.min.js"></script>
+<script src="/static/js/jquery.carouFredSel.js"></script>
+<script src="/static/js/jquery.mousewheel.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/jPages.min.js"></script>
+<script src="/static/js/jquery.jscrollpane.min.js"></script>
+<script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+<script src="/static/js/microoh-v5.js"></script>
+<script>
+$(function(){
+
+	$('.scroll-pane').jScrollPane({
+			autoReinitialise: true
+		});
+		$('a.reply').click(function(event){
+		  event.preventDefault();
+		  var reply_box = $(this).parents('.media-body').find('.media-reply');
+		  reply_box.show();		  
+		});
+
+       function show_card(){
+    var _parent_left = $('.v5-topbar-login').offset().left;
+    var _parent_outw = $('.v5-topbar-login').outerWidth();
+    var _this_outw = $('.show-card').outerWidth();
+    var _this_left = Math.abs(_parent_left - (_this_outw - _parent_outw));
+    $('.show-card').css({
+      'left': _this_left
+    })
+  }
+  show_card();
+  $(window).resize(function(){
+    show_card();
+  });
+
+});
+</script>
+</body>
+</html>
